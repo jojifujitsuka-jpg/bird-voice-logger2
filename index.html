@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野鳥音声記録アプリ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-12">
+    <div class="max-w-md mx-auto p-4">
+        <header class="mb-6 text-center">
+            <h1 class="text-2xl font-bold text-green-700">野鳥ボイスロガー</h1>
+            <p class="text-sm text-gray-500 mt-1">標準キーボードの音声入力でカンタン記録</p>
+        </header>
+
+        <!-- 入力パネル -->
+        <div class="bg-white rounded-2xl shadow p-5 mb-6">
+            <label for="birdInput" class="block text-sm text-gray-600 mb-2">下の欄をタップしてキーボードのマイクで入力</label>
+            
+            <div class="flex gap-2">
+                <!-- 通常のテキスト入力欄（iOS標準の音声入力マイクボタンがキーボードに出現します） -->
+                <input type="text" id="birdInput" placeholder="例: シジュウカラ" 
+                    class="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                
+                <button onclick="addRecordFromInput()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-5 py-3 rounded-xl shadow transition">
+                    追加
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">※キーボード右下（またはスペースキー横）のマイクアイコンを押して発声してください</p>
+        </div>
+
+        <!-- 記録管理ボタン -->
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="font-bold text-gray-700">記録一覧 (<span id="count">0</span>件)</h2>
+            <div class="space-x-2">
+                <button onclick="exportCSV()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1.5 rounded-lg shadow">
+                    LibreOffice用CSV出力
+                </button>
+                <button onclick="clearAll()" class="bg-red-50 hover:bg-red-100 text-red-600 text-sm px-3 py-1.5 rounded-lg">
+                    全削除
+                </button>
+            </div>
+        </div>
+
+        <!-- リスト表示 -->
+        <div id="recordList" class="space-y-2">
+            <!-- 記録がここに追加されます -->
+        </div>
+    </div>
+
+    <script>
+        let records = JSON.parse(localStorage.getItem('bird_records') || '[]');
+
+        // 野鳥特有の漢字・読み方マッピング辞書
